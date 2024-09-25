@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Change refresh rate to the provided mode
+changeTo() {
+	kscreen-doctor output.eDP-2.mode."$1" 1>/dev/null 2>&1
+}
+
+# Reads the current mode and changes to the other
+changeMode() {
+	kscreen-doctor -o | awk 'NR==6 {print $3}' | grep "*" && changeTo 1 || changeTo 0
+}
+
+# change refresh rate when AC power is plugged on or off
+# TODO: currently does not work as a daemon (maybe upstream issue?)
+onACchange() {
+	lastModTime=0
+	journalctl -f -b -u asusd | while read -r; do
+		now=$(date +"%s")
+		diff=$((now - lastModTime))
+
+		if [[ $diff -lt 5 ]]; then
+			:
+		else
+			changeMode >/dev/null
+			lastModTime=$(date +"%s")
+		fi
+	done
+}
+
+# -----------------------------------------------------------------------------------
+# Execution Begins
+
+# Check for flags:
+# 	-f: Follows journalctl output to change refresh rate when AC power is plugged or unplugged
+
+while getopts 'f' OPTION; do
+	case "$OPTION" in
+	f)
+		echo "found -f"
+		onACchange
+		exit
+		;;
+	*) ;;
+	esac
+done
+
+# If an argument is provided, change refresh rate to the one provided
+if [[ $1 ]]; then
+
+	case "$1" in
+	'60')
+		changeTo 1
+		;;
+	'165')
+		changeTo 0
+		;;
+	'0' | '1')
+		changeTo "$1"
+		;;
+	esac
+
+# If no argument is provided change mode from the current one
+else
+	echo "no arguments provided"
+	changeMode >/dev/null
+fi
