@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Open firefox with ctf profile
+firefox -P ctf https://play.picoctf.org/practice &
+# Open terminal in ~/Dev/CTF/
+kitty --start-as=maximized zsh -c "mkdir -p /tmp/df/ctf/; cd /home/dingus_ferry/Development/; ln -s /tmp/df/ctf ./CTF; cd ./CTF/; zsh"
