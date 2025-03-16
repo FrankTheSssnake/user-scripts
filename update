@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Fancy display
+pokeget random --hide-name | fastfetch --file-raw -
+
+# Fancy colored display
+echo -e '\e[38;5;141m'
+echo '+-----------------------------------+'
+echo -e '|   Starting full System Upgrade    |'
+echo '+-----------------------------------+'
+echo -e '\033[0m'
+
+sudo pacman -Syu
+
+rua upgrade
+
+flatpak update
+

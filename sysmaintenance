@@ -1,0 +1,53 @@
+#!/bin/bash
+
+echo -e '\e[38;5;242m'
+echo "----------------------------------------------------"
+echo "UPDATING SYSTEM"
+echo "----------------------------------------------------"
+
+/home/dingus_ferry/Development/scripts/update
+
+echo -e '\e[38;5;242m'
+echo ""
+echo "----------------------------------------------------"
+echo "CLEARING PACMAN CACHE"
+echo "----------------------------------------------------"
+
+pacman_cache_space_used="$(du -sh /var/cache/pacman/pkg/)"
+
+echo -e '\e[38;5;247m'
+echo "Space currently in use: $pacman_cache_space_used"
+
+echo ""
+echo -e '\e[38;5;242m'
+echo "Clearing Cache, leaving newest 2 versions:"
+paccache -vrk2
+
+echo ""
+echo "Clearing all uninstalled packages:"
+paccache -ruk0
+
+echo ""
+echo -e '\e[38;5;242m'
+echo "----------------------------------------------------"
+echo "CLEARING HOME CACHE"
+echo "----------------------------------------------------"
+
+home_cache_used="$(du -sh ~/.cache)"
+echo -e '\e[38;5;242m'
+rm -rf ~/.cache/
+echo "Clearing ~/.cache/..."
+
+echo -e '\e[38;5;247m'
+echo "Spaced saved: $home_cache_used"
+
+
+echo -e '\e[38;5;242m'
+echo ""
+echo "----------------------------------------------------"
+echo "CLEARING SYSTEM LOGS"
+echo "----------------------------------------------------"
+
+journalctl --vacuum-time=7d
+echo ""
+

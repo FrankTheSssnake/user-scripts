@@ -7,7 +7,7 @@ changeTo() {
 
 # Reads the current mode and changes to the other
 changeMode() {
-	kscreen-doctor -o | awk 'NR==6 {print $3}' | grep "*" && changeTo 1 || changeTo 0
+	kscreen-doctor -o | awk 'NR==6 {print $3}' | grep "*" && changeTo 2 || changeTo 1
 }
 
 # change refresh rate when AC power is plugged on or off
@@ -49,12 +49,12 @@ if [[ $1 ]]; then
 
 	case "$1" in
 	'60')
-		changeTo 1
+		changeTo 2
 		;;
 	'165')
-		changeTo 0
+		changeTo 1
 		;;
-	'0' | '1')
+	'1' | '2')
 		changeTo "$1"
 		;;
 	esac
